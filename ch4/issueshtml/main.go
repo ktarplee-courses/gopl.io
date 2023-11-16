@@ -7,14 +7,16 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
+
+	"html/template"
 
 	"gopl.io/ch4/github"
 )
 
 //!+template
-import "html/template"
 
 var issueList = template.Must(template.New("issuelist").Parse(`
 <h1>{{.TotalCount}} issues</h1>
@@ -38,9 +40,9 @@ var issueList = template.Must(template.New("issuelist").Parse(`
 
 //!-template
 
-//!+
+// !+
 func main() {
-	result, err := github.SearchIssues(os.Args[1:])
+	result, err := github.SearchIssues(context.Background(), os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}

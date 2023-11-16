@@ -8,11 +8,11 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 	"math"
 )
 
 //!+decl
-import "image/color"
 
 type Point struct{ X, Y float64 }
 
@@ -34,6 +34,18 @@ func (p *Point) ScaleBy(factor float64) {
 	p.Y *= factor
 }
 
+func (cp ColoredPoint) Colored() string {
+	return "hola"
+}
+
+// var p *Point
+
+// p.Distance(p2)
+// (*p).Distance(p2)
+
+// f := (*Point).ScaleBy
+// f(p, 4)
+
 func main() {
 	//!+main
 	red := color.RGBA{255, 0, 0, 255}
@@ -44,6 +56,9 @@ func main() {
 	p.ScaleBy(2)
 	q.ScaleBy(2)
 	fmt.Println(p.Distance(q.Point)) // "10"
+
+	pp := &p
+	pp.Colored()
 	//!-main
 }
 
@@ -52,6 +67,8 @@ func main() {
 	p.Distance(q) // compile error: cannot use q (ColoredPoint) as Point
 //!-error
 */
+
+var DistanceBetweenPoints = Point.Distance
 
 func init() {
 	//!+methodexpr
@@ -67,7 +84,15 @@ func init() {
 	fmt.Println(p)            // "{2 4}"
 	fmt.Printf("%T\n", scale) // "func(*Point, float64)"
 	//!-methodexpr
+
+	dis := p.Distance // method value
+	dis(q)
+
+	findMinDistance(func(q Point) float64 { return p.Distance(q) }, []Point{})
+	findMinDistance(p.Distance, []Point{})
 }
+
+func findMinDistance(func(q Point) float64, []Point)
 
 func init() {
 	red := color.RGBA{255, 0, 0, 255}
@@ -78,6 +103,9 @@ func init() {
 		*Point
 		Color color.RGBA
 	}
+
+	// no possible
+	// func (p *ColoredPoint) MyDistance() {}
 
 	p := ColoredPoint{&Point{1, 1}, red}
 	q := ColoredPoint{&Point{5, 4}, blue}

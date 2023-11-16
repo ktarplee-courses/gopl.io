@@ -7,6 +7,7 @@
 package thumbnail_test
 
 import (
+	"errors"
 	"log"
 	"os"
 	"sync"
@@ -14,8 +15,8 @@ import (
 	"gopl.io/ch8/thumbnail"
 )
 
-//!+1
-// makeThumbnails makes thumbnails of the specified files.
+// !+1
+// makeThumbnails makes thumbnails of the specified files (sequential version)
 func makeThumbnails(filenames []string) {
 	for _, f := range filenames {
 		if _, err := thumbnail.ImageFile(f); err != nil {
@@ -26,17 +27,18 @@ func makeThumbnails(filenames []string) {
 
 //!-1
 
-//!+2
+// !+2
 // NOTE: incorrect!
 func makeThumbnails2(filenames []string) {
 	for _, f := range filenames {
 		go thumbnail.ImageFile(f) // NOTE: ignoring errors
 	}
+	// NOTE: does not wait for goroutines to finish before returning
 }
 
 //!-2
 
-//!+3
+// !+3
 // makeThumbnails3 makes thumbnails of the specified files in parallel.
 func makeThumbnails3(filenames []string) {
 	ch := make(chan struct{})
@@ -55,7 +57,7 @@ func makeThumbnails3(filenames []string) {
 
 //!-3
 
-//!+4
+// !+4
 // makeThumbnails4 makes thumbnails for the specified files in parallel.
 // It returns an error if any step failed.
 func makeThumbnails4(filenames []string) error {
@@ -77,9 +79,47 @@ func makeThumbnails4(filenames []string) error {
 	return nil
 }
 
+func makeThumbnails4b(filenames []string) error {
+	errorCh := make(chan error)
+
+	for _, f := range filenames {
+		go func(f string) {
+			_, err := thumbnail.ImageFile(f)
+			errorCh <- err
+		}(f)
+	}
+
+	var errs []error
+	for range filenames {
+		errs = append(errs, <-errorCh)
+	}
+
+	return errors.Join(errs...)
+}
+
+func makeThumbnails4c(filenames []string) error {
+	done := make(chan struct{})
+	errs := make([]error, len(filenames))
+
+	for i, f := range filenames {
+		go func(i int, f string) {
+			_, err := thumbnail.ImageFile(f)
+			errs[i] = err
+			done <- struct{}{}
+		}(i, f)
+	}
+
+	for range filenames {
+		<-done
+	}
+	// all goroutines are complete
+
+	return errors.Join(errs...)
+}
+
 //!-4
 
-//!+5
+// !+5
 // makeThumbnails5 makes thumbnails for the specified files in parallel.
 // It returns the generated file names in an arbitrary order,
 // or an error if any step failed.
@@ -111,7 +151,7 @@ func makeThumbnails5(filenames []string) (thumbfiles []string, err error) {
 
 //!-5
 
-//!+6
+// !+6
 // makeThumbnails6 makes thumbnails for each file received from the channel.
 // It returns the number of bytes occupied by the files it creates.
 func makeThumbnails6(filenames <-chan string) int64 {
@@ -135,7 +175,7 @@ func makeThumbnails6(filenames <-chan string) int64 {
 	// closer
 	go func() {
 		wg.Wait()
-		close(sizes)
+		close(sizes) // Note the channel is closed by only one goroutine
 	}()
 
 	var total int64

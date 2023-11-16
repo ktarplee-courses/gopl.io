@@ -11,7 +11,7 @@ import (
 	"sort"
 )
 
-//!+table
+// !+table
 // prereqs maps computer science courses to their prerequisites.
 var prereqs = map[string][]string{
 	"algorithms": {"data structures"},
@@ -34,7 +34,7 @@ var prereqs = map[string][]string{
 
 //!-table
 
-//!+main
+// !+main
 func main() {
 	for i, course := range topoSort(prereqs) {
 		fmt.Printf("%d:\t%s\n", i+1, course)
@@ -44,13 +44,16 @@ func main() {
 func topoSort(m map[string][]string) []string {
 	var order []string
 	seen := make(map[string]bool)
+
+	// notice this is declared here
+	// and not below with short variable assignment
 	var visitAll func(items []string)
 
 	visitAll = func(items []string) {
 		for _, item := range items {
 			if !seen[item] {
 				seen[item] = true
-				visitAll(m[item])
+				visitAll(m[item]) // recurse
 				order = append(order, item)
 			}
 		}

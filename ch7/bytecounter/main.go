@@ -8,6 +8,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"os"
 )
 
 //!+bytecounter
@@ -27,9 +29,23 @@ func main() {
 	c.Write([]byte("hello"))
 	fmt.Println(c) // "5", = len("hello")
 
+	var _ io.Writer = &c
+
 	c = 0 // reset the counter
 	var name = "Dolly"
-	fmt.Fprintf(&c, "hello, %s", name)
+	fmt.Fprintf(io.MultiWriter(&c, os.Stdout), "hello, %s", name)
 	fmt.Println(c) // "12", = len("hello, Dolly")
 	//!-main
+
+	/*
+		echo "hello, Dolly" | tee file | wc -c
+	*/
+
+	// io.Pipe() is like the shell pipe operator
+	// echo "Hello" | wc -c
+
+	// combinedR := io.MultiReader(r1, r2, r3) is like `cat`
+
+	// io.TeeReader is somewhat like `tee`
+
 }

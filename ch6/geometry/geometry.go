@@ -4,7 +4,7 @@
 // See page 156.
 
 // Package geometry defines simple types for plane geometry.
-//!+point
+// !+point
 package geometry
 
 import "math"
@@ -34,6 +34,7 @@ func (path Path) Distance() float64 {
 	for i := range path {
 		if i > 0 {
 			sum += path[i-1].Distance(path[i])
+			// sum += Distance(path[i-1], path[i])
 		}
 	}
 	return sum

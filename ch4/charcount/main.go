@@ -9,6 +9,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -24,7 +25,11 @@ func main() {
 	in := bufio.NewReader(os.Stdin)
 	for {
 		r, n, err := in.ReadRune() // returns rune, nbytes, error
-		if err == io.EOF {
+		// return fmt.Errorf("while brushing teeth: %w", err)
+		// if err == io.EOF {
+		// fmt.Printf("%s", err.Error())
+		// if errors.As(err, myCoolError)
+		if errors.Is(err, io.EOF) {
 			break
 		}
 		if err != nil {

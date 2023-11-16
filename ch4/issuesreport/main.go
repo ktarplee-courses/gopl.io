@@ -7,6 +7,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 	"text/template"
@@ -15,7 +16,7 @@ import (
 	"gopl.io/ch4/github"
 )
 
-//!+template
+// !+template
 const templ = `{{.TotalCount}} issues:
 {{range .Items}}----------------------------------------
 Number: {{.Number}}
@@ -26,20 +27,20 @@ Age:    {{.CreatedAt | daysAgo}} days
 
 //!-template
 
-//!+daysAgo
+// !+daysAgo
 func daysAgo(t time.Time) int {
 	return int(time.Since(t).Hours() / 24)
 }
 
 //!-daysAgo
 
-//!+exec
+// !+exec
 var report = template.Must(template.New("issuelist").
 	Funcs(template.FuncMap{"daysAgo": daysAgo}).
 	Parse(templ))
 
 func main() {
-	result, err := github.SearchIssues(os.Args[1:])
+	result, err := github.SearchIssues(context.Background(), os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -59,7 +60,7 @@ func noMust() {
 		log.Fatal(err)
 	}
 	//!-parse
-	result, err := github.SearchIssues(os.Args[1:])
+	result, err := github.SearchIssues(context.Background(), os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}

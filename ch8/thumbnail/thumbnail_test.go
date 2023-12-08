@@ -178,6 +178,11 @@ func makeThumbnails6(filenames <-chan string) int64 {
 		close(sizes) // Note the channel is closed by only one goroutine
 	}()
 
+	// Would not work because "sizes" is unbufffered
+	// Furthermore, we could not make it buffered because "filenames" is a channel
+	// wg.Wait()
+	// close(sizes)
+
 	var total int64
 	for size := range sizes {
 		total += size

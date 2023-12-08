@@ -11,6 +11,8 @@ import "fmt"
 
 // !+
 func counter(out chan<- int) {
+	// send-only
+	// out <- x
 	for x := 0; x < 100; x++ {
 		out <- x
 	}
@@ -18,6 +20,8 @@ func counter(out chan<- int) {
 }
 
 func squarer(out chan<- int, in <-chan int) {
+	// "in" is receive only
+	// x := <- in
 	for v := range in {
 		out <- v * v
 	}
@@ -25,6 +29,8 @@ func squarer(out chan<- int, in <-chan int) {
 }
 
 func printer(in <-chan int) {
+	// receive only
+	// <-in
 	for v := range in {
 		fmt.Println(v)
 	}

@@ -8,7 +8,6 @@ package bank
 
 //!+
 import (
-	"log"
 	"sync"
 )
 

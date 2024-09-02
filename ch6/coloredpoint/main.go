@@ -60,6 +60,8 @@ func main() {
 	pp := &p
 	pp.Colored()
 	//!-main
+
+	fmt.Println(q.Color)
 }
 
 /*
@@ -92,7 +94,20 @@ func init() {
 	findMinDistance(p.Distance, []Point{})
 }
 
-func findMinDistance(func(q Point) float64, []Point)
+// func findMinDistance(func(q Point) float64, []Point) *Point
+
+func findMinDistance(dis func(q Point) float64, points []Point) *Point {
+	var point *Point
+	var minDis *float64
+	for i, p := range points {
+		d := dis(p)
+		if minDis == nil || *minDis < d {
+			minDis = &d
+			point = &points[i]
+		}
+	}
+	return point
+}
 
 func init() {
 	red := color.RGBA{255, 0, 0, 255}
@@ -114,4 +129,6 @@ func init() {
 	p.ScaleBy(2)
 	fmt.Println(*p.Point, *q.Point) // "{2 2} {2 2}"
 	//!-indirect
+
+	fmt.Println(q.Color)
 }

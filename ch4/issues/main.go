@@ -8,6 +8,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -17,7 +18,8 @@ import (
 
 // !+
 func main() {
-	result, err := github.SearchIssues(os.Args[1:])
+	ctx := context.Background()
+	result, err := github.SearchIssues(ctx, os.Args[1:])
 	if err != nil {
 		log.Fatal(err)
 	}

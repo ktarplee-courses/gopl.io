@@ -8,7 +8,7 @@ package main
 
 import "fmt"
 
-func appendslice(x []int, y ...int) []int {
+func appendSlice(x []int, y ...int) []int {
 	var z []int
 	zlen := len(x) + len(y)
 	if zlen <= cap(x) {
@@ -28,7 +28,7 @@ func appendslice(x []int, y ...int) []int {
 	return z
 }
 
-//!+append
+// !+append
 func appendInt(x []int, y int) []int {
 	var z []int
 	zlen := len(x) + 1
@@ -51,7 +51,7 @@ func appendInt(x []int, y int) []int {
 
 //!-append
 
-//!+growth
+// !+growth
 func main() {
 	var x, y []int
 	for i := 0; i < 10; i++ {

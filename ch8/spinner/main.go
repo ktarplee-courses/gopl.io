@@ -16,13 +16,14 @@ func main() {
 	go spinner(100 * time.Millisecond)
 	const n = 45
 	fibN := fib(n) // slow
+	// go fib(45)
 	fmt.Printf("\rFibonacci(%d) = %d\n", n, fibN)
 }
 
 func spinner(delay time.Duration) {
 	for {
 		for _, r := range `-\|/` {
-			fmt.Printf("\r%c", r)
+			fmt.Printf("\r%c working", r)
 			time.Sleep(delay)
 		}
 	}

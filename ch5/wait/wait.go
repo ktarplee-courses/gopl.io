@@ -14,12 +14,12 @@ import (
 	"time"
 )
 
-//!+
+// !+
 // WaitForServer attempts to contact the server of a URL.
 // It tries for one minute using exponential back-off.
 // It reports an error if all attempts fail.
 func WaitForServer(url string) error {
-	const timeout = 1 * time.Minute
+	const timeout = 2 * time.Minute
 	deadline := time.Now().Add(timeout)
 	for tries := 0; time.Now().Before(deadline); tries++ {
 		_, err := http.Head(url)
